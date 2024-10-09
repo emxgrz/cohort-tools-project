@@ -45,9 +45,10 @@ app.get("/docs", (req, res) => {
 
 app.get("/api/students", async (req, res) => {
   try {
-    const students = await Student.find({});
+    const students = await Student.find({})
+    .populate("cohort");
     console.log("Retrieved students ->", students);
-    res.json(students);
+        res.json(students);
   } catch (error) {
     console.error("Error while retrieving students ->", error);
     res.status(500).json({ error: "Failed to retrieve students" });
@@ -80,38 +81,21 @@ app.get("/api/students/cohort/:cohortId", async (req,res) => {
   const {cohortId} = req.params
   try {
     const students = await Student.find({cohort:cohortId})
+    .populate("cohort")
     res.send(students)
     if (cohortId.length === 0) {
-      return ("n")
+      return ("No cohort mach the description")
     }
   } catch (error) {
     console.log(error)
   }
 })
 
-/* //da todos los estudiantes de un solo cohort
-app.get("/api/students/cohort/:cohortId", async (req,res)=>{
-  const {cohortId} = req.params
-
-  try {
-    const students = await Student.find({cohort:cohortId})
-    .populate("cohort") //relaciona estudiantes con su cohort
-    res.json(students)
-
-
-  }catch (error){
-    console.log(error)
-  }
-  
-  })
-
-*/
-
-
 
 app.get("/api/students/:studentId", async (req,res) => {
   try {
     const estudiante = await Student.findById(req.params.studentId)
+    .populate("cohort")
     res.send(estudiante)
   } catch (error) {
     console.log(error)
