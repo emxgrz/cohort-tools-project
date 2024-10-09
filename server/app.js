@@ -1,6 +1,6 @@
 const cors = require("cors")
-const Students = require("./modules/Students")
-const Cohort = require("./modules/Cohorts")
+const Student = require("./modules/Student")
+const Cohort = require("./modules/Cohort")
 
 const express = require("express");
 const morgan = require("morgan");
@@ -42,29 +42,202 @@ app.get("/docs", (req, res) => {
   res.sendFile(__dirname + "/views/docs.html");
 });
 
-app.get("/students", (req, res) => {
-  Students.find({})
-    .then((students) => {
-      console.log("Retrieved students ->", students);
-      res.json(students);
-    })
-    .catch((error) => {
-      console.error("Error while retrieving books ->", error);
-      res.status(500).json({ error: "Failed to retrieve books" });
-    });
+
+app.get("/api/students", async (req, res) => {
+  try {
+    const students = await Student.find({});
+    console.log("Retrieved students ->", students);
+    res.json(students);
+  } catch (error) {
+    console.error("Error while retrieving students ->", error);
+    res.status(500).json({ error: "Failed to retrieve students" });
+  }
 });
 
-app.get("/cohort", (req, res) => {
-  Cohort.find({})
-    .then((cohorts) => {
-      console.log("Retrieved cohorts ->", cohorts);
-      res.json(cohorts);
+
+app.post("/api/students", async (req,res) => {
+  try {
+    const newStudent = await Student.create({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      phone: req.body.phone,
+      linkedinUrl: req.body.linkedinUrl,
+      languages: req.body.languages, 
+      program: req.body.program,
+      background: req.body.background,
+      image: req.body.image,
+      projects: req.body.projects,
+      cohort: req.body.cohort  
     })
-    .catch((error) => {
-      console.error("Error while retrieving cohorts ->", error);
-      res.status(500).json({ error: "Failed to retrieve cohorts" });
-    });
+    res.json(newStudent)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+app.get("/api/students/cohort/:cohortId", async (req,res) => {
+  const {cohortId} = req.params
+  try {
+    const students = await Student.find({cohort:cohortId})
+    res.send(students)
+    if (cohortId.length === 0) {
+      return ("n")
+    }
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+/* //da todos los estudiantes de un solo cohort
+app.get("/api/students/cohort/:cohortId", async (req,res)=>{
+  const {cohortId} = req.params
+
+  try {
+    const students = await Student.find({cohort:cohortId})
+    .populate("cohort") //relaciona estudiantes con su cohort
+    res.json(students)
+
+
+  }catch (error){
+    console.log(error)
+  }
+  
+  })
+
+*/
+
+
+
+app.get("/api/students/:studentId", async (req,res) => {
+  try {
+    const estudiante = await Student.findById(req.params.studentId)
+    res.send(estudiante)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+app.put("/api/students/:studentId", async (req,res) => {
+  try {
+    const response = await Student.findByIdAndUpdate(req.params.studentId, {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      phone: req.body.phone,
+      linkedinUrl: req.body.linkedinUrl,
+      languages: req.body.languages, 
+      program: req.body.program,
+      background: req.body.background,
+      image: req.body.image,
+      projects: req.body.projects,
+      cohort: req.body.cohort  
+    })
+    res.json("response:", response)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+app.delete("/api/students/:studentId", async (req,res) => {
+  try {
+    await Student.findByIdAndDelete(req.params.studentId)
+    res.json("student deleted")
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+
+
+app.get("/api/cohorts", async (req, res) => {
+  try {
+    const cohorts = await Cohort.find({});
+    console.log("Retrieved cohorts ->", cohorts);
+    res.json(cohorts);
+  } catch (error) {
+    console.error("Error while retrieving cohorts ->", error);
+    res.status(500).json({ error: "Failed to retrieve cohorts" });
+  }
 });
+
+//crear un cohort
+
+app.post("/api/cohorts", async (req, res) => {
+  try {
+    const response = await Cohort.create({
+      inProgress: req.body.inProgress,
+      cohortSlug: req.body.cohortSlug,
+      cohortName: req.body.cohortName,
+      program: req.body.program,
+      campus: req.body.campus,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      programManager: req.body.programManager,
+      leadTeacher: req.body.leadTeacher,
+      totalHours: req.body.totalHours,
+    });
+
+    res.json(response);
+  } catch (error) {
+    console.log(error);
+    res.json({ message: "error" });
+  }
+});
+
+//leer todos los cohort
+
+app.get("/api/cohorts", async (req, res) => {
+  try {
+    const allCohort = await Cohort.find();
+
+    res.json(allCohort);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "error" });
+  }
+});
+
+// leer un cohorts
+
+app.get("/api/cohorts/:id", async (req, res) => {
+  try {
+    const cohort = await Cohort.findById(req.params.id);
+    res.json(cohort);
+  } catch (error) {
+    console.log(error);
+    res.json({ message: "error" });
+  }
+});
+
+// actualizar un cohort
+app.put("/appi/cohorts/:id", async (req, res) => {
+  try {
+    const updateCohorts = await Cohort.findByIdAndUpdate(req.params.id, req.body, {
+      inProgress: false,
+    });
+
+    res.status(200).json(updateCohorts);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "error" });
+  }
+});
+
+//eliminar un cohort
+
+app.delete("/appi/cohorts/:id", async (req, res) => {
+  try {
+    const response = await Cohort.findByIdAndDelete(req.params.id);
+
+    res.status(204).send();
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "error" });
+  }
+});
+
+
 
 
 // START SERVER
