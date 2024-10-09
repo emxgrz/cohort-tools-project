@@ -194,7 +194,7 @@ app.get("/api/cohorts", async (req, res) => {
     res.json(allCohort);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "error" });
+    res.json({ message: "error" });
   }
 });
 
@@ -211,26 +211,26 @@ app.get("/api/cohorts/:id", async (req, res) => {
 });
 
 // actualizar un cohort
-app.put("/appi/cohorts/:id", async (req, res) => {
+app.put("/api/cohorts/:id", async (req, res) => {
   try {
     const updateCohorts = await Cohort.findByIdAndUpdate(req.params.id, req.body, {
-      inProgress: false,
+      new: true,
     });
 
-    res.status(200).json(updateCohorts);
+    res.json(updateCohorts);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "error" });
+    res.json({ message: "error" });
   }
 });
 
 //eliminar un cohort
 
-app.delete("/appi/cohorts/:id", async (req, res) => {
+app.delete("/api/cohorts/:id", async (req, res) => {
   try {
     const response = await Cohort.findByIdAndDelete(req.params.id);
 
-    res.status(204).send();
+    res.send();
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "error" });
