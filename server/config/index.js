@@ -10,9 +10,10 @@ function configs(app) {
   app.use(cookieParser());
   // to allow CORS access from anywhere
   app.use(cors({
-    // origin: '*' // cualquier programa puede contactar a mi servidor. Tiene sentido si creamos una API publica.
+    //origin: '*' // cualquier programa puede contactar a mi servidor. Tiene sentido si creamos una API publica.
     origin: [process.env.ORIGIN]
   }));
+  console.log(process.env.ORIGIN)
 
   // below two configurations will help express routes at correctly receiving data. 
   app.use(express.json()); // recognize an incoming Request Object as a JSON Object

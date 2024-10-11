@@ -7,9 +7,15 @@ router.get("/", (req, res, next) => {
 })
 
 const cohortRouter = require("./cohort.routes.js")
-router.use("/cohort", cohortRouter)
+router.use("/cohorts", cohortRouter)
 
 const studentRouter = require("./student.routes.js")
-router.use("/student", studentRouter)
+router.use("/students", studentRouter)
+
+const authRouter = require("./auth.routes")
+router.use("/auth", authRouter)
+
+const userRouter =require("./users.routes.js")
+router.use("/user", userRouter)
 
 module.exports = router

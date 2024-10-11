@@ -1,3 +1,5 @@
+require("dotenv").config()
+
 //connexion a MongoDB
 require("./db")
 
@@ -6,6 +8,7 @@ const PORT = process.env.PORT || 5005
 
 // INITIALIZE EXPRESS APP - https://expressjs.com/en/4x/api.html#express
 const app = express();
+app.use(express.json());
 
 //gestor rutas
 const indexRouter = require("./routes/index.routes.js")
