@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
-import axios from "axios";
 import placeholderImage from "./../assets/placeholder.png";
+import service from "../services/config";
 
 import { AuthContext } from "../context/auth.context";
 
@@ -15,14 +15,29 @@ function UserProfilePage() {
   const { user } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState(undefined);
 
-  useEffect(() => {
+  useEffect(()=>{
+    getUserData()
+  }, [])
+
+  const getUserData = async (e) =>{
+    try {
+      const response = await service.get("/user")
+      console.log(response)
+      setUserProfile(response.data)
+      setLoading(false)
+    } catch (error) {
+      const errorDescription = error.response.data.message;
+      setErrorMessage(errorDescription);
+    }
+  };
+
+ /*  useEffect(() => {
     const getStudent = () => {
       const storedToken = localStorage.getItem("authToken");
 
       if (storedToken) {
-        axios
-        .get(
-          `${API_URL}/api/users/${user._id}`,
+        service.get(
+          `/users/${user._id}`,
           { headers: { Authorization: `Bearer ${storedToken}` }}
           )
           .then((response) => {
@@ -40,7 +55,7 @@ function UserProfilePage() {
     };
 
     getStudent();
-  }, [user._id]);
+  }, [user._id]); */
 
   if (errorMessage) return <div>{errorMessage}</div>;
   

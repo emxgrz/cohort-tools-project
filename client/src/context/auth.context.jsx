@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import service from "../services/config";
 
 
 // Import the string from the .env with URL of the API/server - http://localhost:5005
@@ -25,8 +25,8 @@ function AuthProviderWrapper(props) {
     // If the token exists in the localStorage
     if (storedToken) {
       // We must send the JWT token in the request's "Authorization" Headers
-      axios
-        .get(`${API_URL}/auth/verify`, {
+      service
+        .get(`/auth/verify`, {
           headers: { Authorization: `Bearer ${storedToken}` },
         })
         .then((response) => {

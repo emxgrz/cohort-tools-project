@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
+import service from "../services/config";
 
 
 // Import the string from the .env with URL of the API/server - http://localhost:5005
@@ -20,12 +21,12 @@ function LoginPage() {
   const handleEmail = (e) => setEmail(e.target.value);
   const handlePassword = (e) => setPassword(e.target.value);
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const requestBody = { email, password };
 
-    axios
-      .post(`${API_URL}/auth/login`, requestBody)
+    const response = await service
+      .post(`/auth/login`, requestBody)
       .then((response) => {
         console.log("JWT token", response.data.authToken);
 
