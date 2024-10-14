@@ -4,11 +4,13 @@ require("dotenv").config()
 require("./db")
 
 const express = require("express");
-const PORT = process.env.PORT || 5005
 
 // INITIALIZE EXPRESS APP - https://expressjs.com/en/4x/api.html#express
 const app = express();
-app.use(express.json());
+
+// configuraciones del servidor
+const config = require("./config")
+config(app)
 
 //gestor rutas
 const indexRouter = require("./routes/index.routes.js")
@@ -20,6 +22,7 @@ errorHandling(app)
 
 
 // START SERVER
+const PORT = process.env.PORT || 5005
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });

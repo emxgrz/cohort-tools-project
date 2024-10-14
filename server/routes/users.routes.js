@@ -3,9 +3,9 @@ const router = express.Router()
 const verifyToken = require("../middlewares/auth.middlewares")
 const User = require("../modules/User.model")
 
-router.get("/:userId", async (req, res, next) => {
+router.get("/", verifyToken ,async (req, res, next) => {
   try {
-  const user = await User.findById(req.params.userId)
+  const user = await User.findById(req.payload._id)
   if (!user) {
     return res.status(404).json({ message: "Usuario no encontrado" });
   }

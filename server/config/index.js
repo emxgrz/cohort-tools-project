@@ -1,17 +1,18 @@
 const cors = require("cors")
 const logger = require("morgan");
-const cookieParser = require("cookie-parser");
+const express = require("express")
 
+const FRONTEND_URL = process.env.ORIGIN || "http://localhost:5174"
+console.log("url", FRONTEND_URL)
 function configs(app) {
 
   // all middlewares & configurations here
   app.use(logger("dev"));
   app.use(express.static("public"));
-  app.use(cookieParser());
   // to allow CORS access from anywhere
   app.use(cors({
     //origin: '*' // cualquier programa puede contactar a mi servidor. Tiene sentido si creamos una API publica.
-    origin: [process.env.ORIGIN]
+    origin: [FRONTEND_URL]
   }));
   console.log(process.env.ORIGIN)
 
